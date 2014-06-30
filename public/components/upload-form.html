@@ -2,6 +2,7 @@
 <polymer-element name="upload-form" attributes="file">
   <template>
     <paper-button on-click="{{uploadFile}}" label="Upload" raisedButton></paper-button>
+
     <h2 id="status">{{status}}</h2>
     <a href="{{responseLink}}">{{responseLink}}</a>
   </template>
@@ -11,6 +12,7 @@
       file: {},
       uploadFile: function() {        
         var file = this.file;
+        console.log(this.file);
         var formData = new FormData();
         formData.append('file', file, file.name);
         var xhr = new XMLHttpRequest();

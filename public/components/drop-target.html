@@ -1,5 +1,5 @@
 <!-- Define element -->
-<polymer-element name="drop-target" attributes="files">
+<polymer-element name="drop-target" attributes="file">
   <template>
     <style>
       #dropTarget {
@@ -20,11 +20,9 @@
       },
       getFile: function(event) {
         event.preventDefault();
-        var files = event.dataTransfer.files;
-        console.log(files);
-        this.files = files;
-        this.$.dropTarget.innerHTML = files[0].name;
-        this.fire('hasFile', {file: files[0]});
+        this.file = event.dataTransfer.files[0];
+        this.$.dropTarget.innerHTML = this.file.name;
+        // this.fire('hasFile', {file: files[0]});
         return false;
       }
     });
