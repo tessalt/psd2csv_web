@@ -1,0 +1,32 @@
+<!-- Define element -->
+<polymer-element name="drop-target" attributes="files">
+  <template>
+    <style>
+      #dropTarget {
+        height: 200px;
+        width: 200px;
+        background: #eaeaea;
+        display: block;
+      }
+    </style>
+    <div id="dropTarget" on-dragend="{{cancel}}" on-dragover="{{cancel}}" on-drop="{{getFile}}">Drop here</div>
+  </template>
+  <script>
+    Polymer('drop-target',{
+      files: {},
+      cancel: function(event) {
+        event.preventDefault();
+        return false;
+      },
+      getFile: function(event) {
+        event.preventDefault();
+        var files = event.dataTransfer.files;
+        console.log(files);
+        this.files = files;
+        this.$.dropTarget.innerHTML = files[0].name;
+        this.fire('hasFile', {file: files[0]});
+        return false;
+      }
+    });
+  </script>
+</polymer-element>

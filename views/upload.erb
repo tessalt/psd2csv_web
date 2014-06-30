@@ -3,7 +3,9 @@
 <head>
   <title></title>
   <link rel="import" href="components/paper-elements/paper-elements.html">
+  <link rel="import" href="components/drop-target.html">
   <link rel="import" href="components/upload-form.html">
+  <link rel="import" href="components/upload-handler.html">
 </head>
 <body>
 <!-- 
@@ -13,6 +15,21 @@
     <paper-button label="Upload" raisedButton></paper-button>
   </form> -->
 
-  <upload-form></upload-form>
+  <upload-handler></upload-handler>
+
+  <script>
+//   var doc = document.documentElement;
+// doc.ondragover = function () {return false; };
+// doc.ondragend = function () { this.className = ''; return false; };
+// doc.ondrop = function (event) {
+//   event.preventDefault && event.preventDefault();
+//   this.className = '';
+
+//   // now do something with:
+//   var files = event.dataTransfer.files;
+//   console.log(files);
+//   return false;
+// };
+</script>
 </body>
 </html>

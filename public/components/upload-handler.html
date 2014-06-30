@@ -1,0 +1,20 @@
+<!-- Define element -->
+<polymer-element name="upload-handler">
+  <template>
+    
+    <drop-target id="drop"></drop-target>
+  <br />
+    <upload-form id="upload" file="{{file}}"></upload-form>
+  </template>
+  <script>
+    Polymer('upload-handler',{
+      ready: function() {
+        var self = this;
+        this.$.drop.addEventListener('hasFile', function(e) {
+          console.log(e);
+          self.$.upload.file = e.detail.file;
+        })
+      }
+    });
+  </script>
+</polymer-element>

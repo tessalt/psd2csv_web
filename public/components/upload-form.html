@@ -1,30 +1,28 @@
 <!-- Define element -->
-<polymer-element name="upload-form">
+<polymer-element name="upload-form" attributes="file">
   <template>
-    <style> /*...*/ </style>
-    <input type="file" id="fileUpload">
     <paper-button on-click="{{uploadFile}}" label="Upload" raisedButton></paper-button>
+    <h2 id="status">{{status}}</h2>
+    <a href="{{responseLink}}">{{responseLink}}</a>
   </template>
   <script>
-    Polymer({
-      counter: 0, // Default value
-      counterChanged: function() {
-        this.$.counterVal.classList.add('highlight');
-      },
-      increment: function() {
-        this.counter++;
-      },
+    Polymer('upload-form',{
+      status: "upload a file",
+      file: {},
       uploadFile: function() {        
-        var file = this.$.fileUpload.files[0];
+        var file = this.file;
         var formData = new FormData();
         formData.append('file', file, file.name);
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/upload', true);
+        this.status = 'Loading';
+        var self = this;
         xhr.onload = function () {
           if (xhr.status === 200) {
-            console.log(xhr.responseText);
+            self.status = 'Loaded';
+            self.responseLink = xhr.responseText;
           } else {
-            alert('An error occurred!');
+            self.status = 'Error: ' + xhr.responseText;
           }
         };
         xhr.send(formData);
