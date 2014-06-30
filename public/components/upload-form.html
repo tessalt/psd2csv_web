@@ -1,0 +1,34 @@
+<!-- Define element -->
+<polymer-element name="upload-form">
+  <template>
+    <style> /*...*/ </style>
+    <input type="file" id="fileUpload">
+    <paper-button on-click="{{uploadFile}}" label="Upload" raisedButton></paper-button>
+  </template>
+  <script>
+    Polymer({
+      counter: 0, // Default value
+      counterChanged: function() {
+        this.$.counterVal.classList.add('highlight');
+      },
+      increment: function() {
+        this.counter++;
+      },
+      uploadFile: function() {        
+        var file = this.$.fileUpload.files[0];
+        var formData = new FormData();
+        formData.append('file', file, file.name);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/upload', true);
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            console.log(xhr.responseText);
+          } else {
+            alert('An error occurred!');
+          }
+        };
+        xhr.send(formData);
+      }
+    });
+  </script>
+</polymer-element>

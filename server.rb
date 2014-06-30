@@ -39,46 +39,55 @@ get "/upload" do
 end    
 
 post "/upload" do 
-  File.open('uploads/' + params['myfile'][:filename], "w") do |f|
-    f.write(params['myfile'][:tempfile].read)
-    psd = PSD.new(f, parse_layer_images: true)
-    csv_file = 'psd.csv'
-    rows = Array.new
+  puts params
+  uploadedFile = 'uploads/' + params['file'][:filename]
+  if File.extname(uploadedFile) == '.psd'
+    File.open(uploadedFile, "w") do |f|
+      f.write(params['file'][:tempfile].read)
+      psd = PSD.new(f, parse_layer_images: true)
+      csv_file = 'psd.csv'
+      rows = Array.new
 
-    psd.tree.descendant_layers.each do |layer|
-      unless layer.text.nil?
-        matches = /\*\[([a-zA-Z]\d*)/.match(layer.name)
-        if matches
-          puts matches
-          row = Hash.new
-          row[:index] = matches[1]
-          row[:text] = layer.text[:value]
-          rows.push(row)
+      psd.tree.descendant_layers.each do |layer|
+        unless layer.text.nil?
+          matches = /\*\[([a-zA-Z]\d*)/.match(layer.name)
+          if matches
+            row = Hash.new
+            row[:index] = matches[1]
+            row[:text] = layer.text[:value]
+            rows.push(row)
+          end
         end
       end
+
+      sorted_rows = rows.sort do |a, b|
+        a[:index].upcase <=> b[:index].upcase
+      end
+
+      sheet = session[:drive].create_spreadsheet(params['file'][:filename])
+      ws = sheet.worksheets[0]
+
+      ws[1,1] = "index"
+      ws[1,2] = "layer text"
+
+      sorted_rows.each_with_index do |row, index|
+        text = row[:text].gsub(/[[:cntrl:]]/, '')       
+        ws[index+2, 1] = row[:index]
+        ws[index+2, 2] = text
+      end
+
+      FileUtils.rm_rf(Dir.glob('uploads/*'))
+
+      ws.save
+
+      return sheet.human_url
+
     end
 
-    sorted_rows = rows.sort do |a, b|
-      a[:index].upcase <=> b[:index].upcase
-    end
-
-    sheet = session[:drive].create_spreadsheet(params['myfile'][:filename])
-    ws = sheet.worksheets[0]
-
-    ws[1,1] = "index"
-    ws[1,2] = "layer text"
-
-    sorted_rows.each_with_index do |row, index|
-      text = row[:text].gsub(/[[:cntrl:]]/, '')       
-      ws[index+2, 1] = row[:index]
-      ws[index+2, 2] = text
-    end
-
-    ws.save
-
-    return sheet.human_url
-
+  else 
+    return 'Please upload only .psd files'
   end
+
 
 end
 
