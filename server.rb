@@ -6,22 +6,24 @@ require 'json'
 require 'oauth2'
 require "google_drive"
 require "yaml"
-require_relative "psdfile"
-require_relative "spreadsheet"
+require "sixarm_ruby_magic_number_type"
+
+require_relative "./lib/psdfile"
+require_relative "./lib/spreadsheet"
 
 enable :sessions
 
 CONFIG = YAML.load_file("config.yml") unless defined? CONFIG
-
-get "/" do
-  erb :index
-end
 
 client = OAuth2::Client.new(
   CONFIG['clientid'], CONFIG['secret'],
   :site => "https://accounts.google.com",
   :token_url => "/o/oauth2/token",
   :authorize_url => "/o/oauth2/auth")
+
+get "/" do
+  erb :index
+end
 
 get "/auth" do
   auth_url = client.auth_code.authorize_url(
@@ -41,15 +43,12 @@ get "/upload" do
 end    
 
 post "/upload" do 
-  uploadedFile = 'uploads/' + params['file'][:filename]
-  if File.extname(uploadedFile) == '.psd'
-    File.open(uploadedFile, "w") do |f|
-      f.write(params['file'][:tempfile].read)
-      psd = PsdFile.new(f)
-      spreadsheet = SpreadSheet.new(session[:drive], params['file'][:filename], psd.rows)
-      FileUtils.rm_rf(Dir.glob('uploads/*'))      
-      return spreadsheet.sheet.human_url
-    end
+  tempfile = params['file'][:tempfile]
+  filetype = File.magic_number_type(tempfile)
+  if filetype == :adobe_photoshop
+    psd = PsdFile.new(tempfile)
+    spreadsheet = SpreadSheet.new(session[:drive], params['file'][:filename], psd.rows)
+    return spreadsheet.sheet.human_url
   else 
     return 'Please upload only .psd files'
   end
