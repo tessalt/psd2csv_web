@@ -1,9 +1,6 @@
 source 'https://rubygems.org'
 gem 'sinatra'
 gem 'psd'
-gem 'csv'
-gem 'json'
 gem 'oauth2'
 gem "google_drive"
-gem "yaml"
 gem "sixarm_ruby_magic_number_type"
