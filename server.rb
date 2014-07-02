@@ -13,16 +13,8 @@ require_relative "./lib/spreadsheet"
 
 enable :sessions
 
-# if ENV['RACK_ENV'] == 'production'
-CONFIG['CLIENTID'] = ENV['CLIENTID'] 
-CONFIG['CLIENTSECRET'] = ENV['CLIENTSECRET']
-# else
-#   CONFIG = YAML.load_file("config.yml") unless defined? CONFIG
-# end
-
-
 client = OAuth2::Client.new(
-  CONFIG['CLIENTID'], CONFIG['CLIENTSECRET'],
+  ENV['CLIENTID'], ENV['CLIENTSECRET'],
   :site => "https://accounts.google.com",
   :token_url => "/o/oauth2/token",
   :authorize_url => "/o/oauth2/auth")
