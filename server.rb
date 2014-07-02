@@ -13,14 +13,12 @@ require_relative "./lib/spreadsheet"
 
 enable :sessions
 
-puts ENV['RACK_ENV']
-
-if ENV['RACK_ENV'] == 'production'
-  CONFIG['CLIENTID'] = ENV['CLIENTID'] 
-  CONFIG['CLIENTSECRET'] = ENV['CLIENTSECRET']
-else
-  CONFIG = YAML.load_file("config.yml") unless defined? CONFIG
-end
+# if ENV['RACK_ENV'] == 'production'
+CONFIG['CLIENTID'] = ENV['CLIENTID'] 
+CONFIG['CLIENTSECRET'] = ENV['CLIENTSECRET']
+# else
+#   CONFIG = YAML.load_file("config.yml") unless defined? CONFIG
+# end
 
 
 client = OAuth2::Client.new(
