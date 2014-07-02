@@ -13,6 +13,8 @@ require_relative "./lib/spreadsheet"
 
 enable :sessions
 
+puts ENV['RACK_ENV']
+
 if ENV['RACK_ENV'] == 'production'
   CONFIG['CLIENTID'] = ENV['CLIENTID'] 
   CONFIG['CLIENTSECRET'] = ENV['CLIENTSECRET']
