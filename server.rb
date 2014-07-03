@@ -7,6 +7,8 @@ require 'oauth2'
 require "google_drive"
 require "yaml"
 require "sixarm_ruby_magic_number_type"
+require 'dotenv'
+Dotenv.load
 
 require_relative "./lib/psdfile"
 require_relative "./lib/spreadsheet"
